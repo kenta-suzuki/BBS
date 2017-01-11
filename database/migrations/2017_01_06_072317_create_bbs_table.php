@@ -21,7 +21,7 @@ class CreateBbsTable extends Migration
             $table->string('password');
             $table->string('file_name');
             $table->string('parent_bbs_id');
-            $table->bool('is_deleted');
+            $table->boolean('is_deleted');
             $table->rememberToken();
             $table->timestamps();
         });
