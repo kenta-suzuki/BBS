@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class BaseData 
 {
-	public int Id;
+	public long Id;
 }

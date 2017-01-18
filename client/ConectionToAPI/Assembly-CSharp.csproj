@@ -53,7 +53,13 @@
      <Compile Include="Assets\Model\BaseModel.cs" />
      <Compile Include="Assets\Model\Data\BBS.cs" />
      <Compile Include="Assets\Model\Data\BaseData.cs" />
-     <Compile Include="Assets\Scripts\APIConnectionTest.cs" />
+     <Compile Include="Assets\Scripts\APIConnection.cs" />
+     <Compile Include="Assets\Scripts\Common\CommonButton.cs" />
+     <Compile Include="Assets\Scripts\DataManager.cs" />
+     <Compile Include="Assets\Scripts\Models.cs" />
+     <Compile Include="Assets\Scripts\Panel\TopPanel\ThreadContent.cs" />
+     <Compile Include="Assets\Scripts\Panel\TopPanel\TopPanelController.cs" />
+     <Compile Include="Assets\Scripts\Panel\TopPanel\TopPanelView.cs" />
      <None Include="Assets\JSON\readme.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity550/Unity550.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
