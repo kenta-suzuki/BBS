@@ -8,19 +8,25 @@ use App\BBSModel;
 
 class BBSController extends Controller
 {
-	public function __construct()
-	{
-		$model = new BBSModel();
-	}
-
-    public function getIndex()
+    public function getAllArticle()
     {
-    	$model = new BBSModel;
-    	$val = $model->getAllPostingData();
-    	return $val;
+        $model = new BBSModel();
+    	return $model->getAllPostingData();
     }
 
-    public function getPostingThread()
+    public function getPostingData(int $id)
+    {
+        $model = new BBSModel();
+        return $model->getDataFromId($id);
+    }
+
+    public function createArticle($request)
+    {
+        $model = new BBSModel();
+        return $model->createArticle($request);
+    }
+
+    public function updateArticle(Request $request)
     {
 
     }

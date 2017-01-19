@@ -21,6 +21,6 @@ Route::get('/update', 'bbs_test@UpdateText');
 Route::get('/delete', 'bbs_test@DeletePosting');
 
 
-Route::get('/bbs/', 'BBSController@getIndex');
-
+Route::get('/bbs/', 'BBSController@getAllArticle');
+Route::get('create/{request}/', 'BBSController@createArticle');
 
