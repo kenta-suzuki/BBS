@@ -7,18 +7,18 @@ using UnityEngine.UI;
 public class ThreadContent : MonoBehaviour
 {
 	[SerializeField]
-	Image ThreadImage;
+	Image ArticleImage;
 	[SerializeField]
-	Text ThreadSubject;
+	Text ArticleSubject;
 	[SerializeField]
-	CommonButton ThreadButton;
+	CommonButton ArticleButton;
 
 	const string PrefabName = "Prefabs/Thread";
 	public event Action ThreadButtonClicked = delegate {};
 
 	public void Initialize(BBS data)
 	{
-		ThreadSubject.text = data.Subject;
+		ArticleSubject.text = data.Subject;
 		// 画像が添付できるようになったら処理をかく
 	}
 

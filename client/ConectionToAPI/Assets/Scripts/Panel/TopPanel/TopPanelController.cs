@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TopPanelController : MonoBehaviour
+public class TopPanelController : ControllerBase<TopPanelController, TopPanelView>
 {
-	public TopPanelView View;
-
-	// Use this for initialization
-	void Start()
+	protected override void Initialize()
 	{
+		Debug.Log("TopPanelCotroller Initialize");
+		base.Initialize();
 		View.ReloadButtonClicked += () => OnReloadButtonClick();
 		View.ContentButtonClicked += (id) => OnThreadButtonClick(id);
-		View.Initialize();
+		View.CreateArticleButtonClicked += () => OnCreateArticleButtonClick();
 	}
 
 	void OnReloadButtonClick()
@@ -24,18 +23,14 @@ public class TopPanelController : MonoBehaviour
 		// to thread page
 	}
 
+	void OnCreateArticleButtonClick()
+	{
+		Hide();
+		CreateArticleController.Open(PageManager.Instance.transform, () => Show(), "Prefabs/Pages/CreateArticlePanel");
+	}
+
 	void ReloadCallback(List<BBS> datas)
 	{
 		View.AddThread(datas);
-	}
-
-	void Show()
-	{
-		View.Show();
-	}
-
-	void Hide()
-	{
-		View.Hide();
 	}
 }

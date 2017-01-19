@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Text;
 
 public class APIConnection : MonoBehaviour
 {
 	static APIConnection _apiConnection;
 	public static APIConnection Conncetion { get { return _apiConnection; } }
-	const string URL = "http://192.168.33.19:8000/bbs/";
-	WWW www;
+	const string URL = "http://192.168.33.19:8000/";
+	string _requestURL;
+	WWW _www;
 	List<JSONObject> _list;
 
 	void Start()
@@ -16,27 +18,28 @@ public class APIConnection : MonoBehaviour
 		_apiConnection = this;
 	}
 
-	public void Request(Action<List<JSONObject>> callback)
+	public void Request(string host, string parameter,  Action<List<JSONObject>> callback = null)
 	{
+		_requestURL = URL + host + "/" + parameter;
 		StartCoroutine(WaitForResponse(callback));
 	}
 
 	IEnumerator WaitForResponse(Action<List<JSONObject>> callback)
 	{
 		_list = null;
-		var requestURL = URL;
-		www = new WWW(requestURL);
+		_www = new WWW(_requestURL);
+		Debug.Log(_requestURL);
 
-		yield return www;
+		yield return _www;
 
-		if (!string.IsNullOrEmpty(www.error))
+		if (!string.IsNullOrEmpty(_www.error))
 		{
-			Debug.LogError(string.Format("Fail Whale!\n{0}", www.error));
+			Debug.LogError(string.Format("Fail Whale!\n{0}", _www.error));
 			yield break;
 		}
 
-		string json = www.text;
+		string json = _www.text;
 		JSONObject jsonObj = new JSONObject(json);
-		callback(jsonObj.list);
+		if(callback != null) callback(jsonObj.list);
 	}
 }

@@ -4,23 +4,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class TopPanelView : MonoBehaviour
+public class TopPanelView : ViewBase
 {
-	[SerializeField]
-	GameObject Panel;
 	[SerializeField]
 	CommonButton ReloadButton;
 	[SerializeField]
+	CommonButton CreateArticleButton;
+	[SerializeField]
 	GameObject Grid;
 
+	public event Action CreateArticleButtonClicked;
 	public event Action ReloadButtonClicked;
 	public event Action<long> ContentButtonClicked = delegate {};
 	List<ThreadContent> _contents = new List<ThreadContent>();
 
-	public void Initialize()
+	public override void Initialize()
 	{
 		ClearThreadDatas();
 		ReloadButton.ButtonClicked += () => ReloadButtonClicked();
+		CreateArticleButton.ButtonClicked += () => CreateArticleButtonClicked();
 	}
 
 	public void AddThread(List<BBS> datas)
@@ -40,15 +42,5 @@ public class TopPanelView : MonoBehaviour
 	{
 		_contents.ForEach((obj) => Destroy(obj.gameObject));
 		_contents.Clear();
-	}
-
-	public void Show()
-	{
-		Panel.SetActive(true);
-	}
-
-	public void Hide()
-	{
-		Panel.SetActive(false);
 	}
 }
