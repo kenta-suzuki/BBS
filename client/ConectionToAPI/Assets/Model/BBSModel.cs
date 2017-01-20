@@ -5,46 +5,37 @@ using System;
 using System.Linq;
 
 public class BBSModel :BaseModel
-{
-	const string Top = "bbs";
-	
+{	
 	public List<BBS> BBSDatas { get; private set;}
-	bool _canSendRequest;
 
 	public override void Initialize()
 	{
 		BBSDatas = new List<BBS>();
-		_canSendRequest = true;
 	}
 
-	public void AddData(List<JSONObject> objects)
+	public void CreateBBSData(List<JSONObject> objects)
 	{
+		BBSDatas.Clear();
 		objects.ForEach((obj) => BBSDatas.Add(BBS.CreateData(obj)));
 	}
 
 	public void RequestAllBBSData(Action<List<BBS>> callback)
 	{
-		if (!_canSendRequest) return;
-
-		_canSendRequest = false;
-		APIConnection.Conncetion.Request(Top, "", (objects) =>
+		var request = new Request("articles", HTTPMethod.Get);
+		APIConnection.Conncetion.Request(request, (objects) =>
 		{
-			AddData(objects);
+			CreateBBSData(objects);
 			callback(BBSDatas);
-			_canSendRequest = true;
 		});
 	}
 
-	public void CreateArticle(JSONObject json)
+	public void CreateArticle(CreateArticleModel model, Action callback)
 	{
-		if (!_canSendRequest) return;
-
-		_canSendRequest = false;
-
-		APIConnection.Conncetion.Request("create", json.ToString(), (objects) =>
+		var request = new Request("articles/create", HTTPMethod.Post, model.GetJsonData().ToString(), model.ArticleImage);
+		APIConnection.Conncetion.Request(request, (objects) =>
 		{
 			BBSDatas.Add(BBS.CreateData(objects.First()));
-			_canSendRequest = true;
+			callback();
 		});
 	}
 }
