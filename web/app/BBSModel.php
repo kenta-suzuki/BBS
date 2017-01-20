@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class BBSModel extends Model
 {
@@ -14,32 +15,54 @@ class BBSModel extends Model
     	$all_data = BBSModel::query()
     		->orderBy('created_at','asc')
     		->get();
-    	return $all_data;
+
+        foreach ($all_data as $data)
+        {
+            $data['image'] = $this->getDownLoadArticleImage($data->file_name);
+        }
+
+        return $all_data;
     }
 
     public function getDataFromId(int $id)
     {
-    	$datas = BBSModel::query()
+    	$data = BBSModel::query()
     		->where('id', $id)
-    		->get();
-    	return $datas;
+    		->first();
+        $data['image'] = $this->getDownLoadArticleImage($data->file_name);
+    	return $data;
+    }
+
+    public function getLatestData()
+    {
+        $latestData = BBSModel::query()
+            ->orderBy('created_at','desc')
+            ->first();
+        return $latestData;
     }
 
     public function createArticle($request)
     {
-        $json = json_decode($request, true);
         $newArticle = BBSModel::create([
-                'subject' => $json['subject'],
-                'text' => $json['text'],
-                'email' => $json['email'],
-                'password' => $json['password'],
-                'file_name' => $json['file_name'],
+                'subject' => $request['subject'],
+                'text' => $request['text'],
+                'email' => $request['email'],
+                'password' => $request['password'],
+                'file_name' => $request['file_name'],
                 'parent_bbs_id' => 0,
                 'is_deleted' => false,
             ]);
         $newArticle->parent_bbs_id = $newArticle->id;
+        $newArticle->id = $newArticle->id;
         $newArticle->save();
+    }
 
-        return $newArticle;
+    public function getDownLoadArticleImage($name)
+    {
+        $filename = public_path('media'). '/'.$name;
+        $handle = fopen($filename, "rb");
+        $contents = fread($handle, filesize($filename));
+        fclose($handle);
+        return base64_encode($contents);
     }
 }

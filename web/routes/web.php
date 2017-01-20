@@ -15,12 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test', 'bbs_test@Index');
-Route::get('/create', 'bbs_test@CreatePostingData');
-Route::get('/update', 'bbs_test@UpdateText');
-Route::get('/delete', 'bbs_test@DeletePosting');
-
-
-Route::get('/bbs/', 'BBSController@getAllArticle');
-Route::get('create/{request}/', 'BBSController@createArticle');
-
+Route::get('articles/', 'BBSController@getAllArticle');
+Route::post('articles/create', 'BBSController@createArticle');
+Route::get('articles/{id}', 'BBSController@getArticleFromId');
