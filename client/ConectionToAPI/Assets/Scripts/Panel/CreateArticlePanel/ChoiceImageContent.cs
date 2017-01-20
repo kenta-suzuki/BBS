@@ -22,6 +22,7 @@ public class ChoiceImageContent : MonoBehaviour
 	public void Initialize(Texture2D texture, int id)
 	{
 		_texture = texture;
+		TextureScale.Bilinear(texture, 200, 200);
 		Image.sprite = Sprite.Create(texture, new Rect(0, 0, 200, 200), new Vector2(0.5f, 0.5f));
 		Id = id;
 		CheckMark.gameObject.SetActive(false);

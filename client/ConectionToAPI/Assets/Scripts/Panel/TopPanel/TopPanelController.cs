@@ -6,7 +6,6 @@ public class TopPanelController : ControllerBase<TopPanelController, TopPanelVie
 {
 	protected override void Initialize()
 	{
-		Debug.Log("TopPanelCotroller Initialize");
 		base.Initialize();
 		View.ReloadButtonClicked += () => OnReloadButtonClick();
 		View.ContentButtonClicked += (id) => OnThreadButtonClick(id);
@@ -15,7 +14,11 @@ public class TopPanelController : ControllerBase<TopPanelController, TopPanelVie
 
 	void OnReloadButtonClick()
 	{
-		DataManager.Manager.Models.BBSModel.RequestAllBBSData((datas) => ReloadCallback(datas));
+		DataManager.Manager.Models.BBSModel.RequestAllBBSData((datas) =>
+		{
+			Clear();
+			ReloadCallback(datas);
+		});
 	}
 
 	void OnThreadButtonClick(long id)

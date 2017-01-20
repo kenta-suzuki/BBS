@@ -2,44 +2,78 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.Text;
+using UnityEngine.Networking;
+using System.Linq;
 
 public class APIConnection : MonoBehaviour
 {
 	static APIConnection _apiConnection;
 	public static APIConnection Conncetion { get { return _apiConnection; } }
-	const string URL = "http://192.168.33.19:8000/";
-	string _requestURL;
-	WWW _www;
-	List<JSONObject> _list;
+	bool _canSendRequest;
 
 	void Start()
 	{
 		_apiConnection = this;
+		_canSendRequest = true;
 	}
 
-	public void Request(string host, string parameter,  Action<List<JSONObject>> callback = null)
+	public void Request(Request request, Action<List<JSONObject>> callback = null)
 	{
-		_requestURL = URL + host + "/" + parameter;
-		StartCoroutine(WaitForResponse(callback));
+		StartCoroutine(Send(request, callback));
 	}
 
-	IEnumerator WaitForResponse(Action<List<JSONObject>> callback)
+	UnityWebRequest CreateRequest(Request request)
 	{
-		_list = null;
-		_www = new WWW(_requestURL);
-		Debug.Log(_requestURL);
-
-		yield return _www;
-
-		if (!string.IsNullOrEmpty(_www.error))
+		if (request.Method == HTTPMethod.Get)
 		{
-			Debug.LogError(string.Format("Fail Whale!\n{0}", _www.error));
-			yield break;
+			return UnityWebRequest.Get(request.URI);
 		}
+		else
+		{
+			return UnityWebRequest.Post(request.URI, request.GetPostDataFromParameter());
+		}
+	}
 
-		string json = _www.text;
-		JSONObject jsonObj = new JSONObject(json);
-		if(callback != null) callback(jsonObj.list);
+	void OnReciveResponse(string response, Action<List<JSONObject>> callback)
+	{
+		Debug.Log(response);
+		if (callback == null) return;
+
+		var jsonObj = new JSONObject(response);
+		Debug.Log(jsonObj);
+		if (response[0] == '{')
+		{
+			var list = new List<JSONObject>() { jsonObj };
+			callback(list);
+		}
+		else
+		{
+			callback(jsonObj.list);
+		}
+	}
+
+	IEnumerator Send(Request request, Action<List<JSONObject>> callback)
+	{
+		if (!_canSendRequest) yield break;
+
+		_canSendRequest = false;
+
+		Debug.Log("URI : " + request.URI + ", Method : " + request.Method);
+		using (UnityWebRequest www = CreateRequest(request))
+		{
+			yield return www.Send();
+
+			_canSendRequest = true;
+			if (www.isError || www.responseCode != 200)
+			{
+				var message = www.isError ? www.error : www.responseCode.ToString() + www.downloadHandler.text;
+				Debug.LogError(string.Format("Fail Whale!\n{0}", message));
+				yield break;
+			}
+			else
+			{
+				OnReciveResponse(www.downloadHandler.text, callback);
+			}
+		}
 	}
 }

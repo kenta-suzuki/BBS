@@ -26,4 +26,8 @@ public abstract class ViewBase : MonoBehaviour
 	{
 		RootPanel.SetActive(false);
 	}
+
+	public virtual void Clear()
+	{
+	}
 }

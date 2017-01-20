@@ -9,21 +9,23 @@ public abstract class ControllerBase<T,V> : MonoBehaviour where V :ViewBase, new
 	public virtual string PrefabName { get; }
 	public event Action BackButtonClicked = delegate {};
 
-	public static void Open(Transform parent, Action backbuttonClickCallback, string prefabName)
+	public static T Open(Transform parent, Action backbuttonClickCallback, string prefabName)
 	{
+		T controller;
 		if (!PageManager.Instance.Pages.ContainsKey(prefabName))
 		{
 			var obj = (GameObject)Instantiate(Resources.Load(prefabName), parent);
-			var controller = obj.GetComponent<T>();
+			controller = obj.GetComponent<T>();
 			controller.BackButtonClicked += () => backbuttonClickCallback();
 			controller.Initialize();
 			PageManager.Instance.Add(prefabName, obj);
 		}
 		else
 		{
-			var controller = PageManager.Instance.Pages[prefabName].GetComponent<T>();
+			controller = PageManager.Instance.Pages[prefabName].GetComponent<T>();
 			controller.Show();
 		}
+		return controller;
 	}
 
 	protected virtual void Initialize()
@@ -40,13 +42,28 @@ public abstract class ControllerBase<T,V> : MonoBehaviour where V :ViewBase, new
 		BackButtonClicked();
 	}
 
+	protected virtual void OnPageHide()
+	{
+	}
+
 	protected void Hide()
 	{
 		View.Hide();
+		OnPageHide();
+	}
+
+	protected virtual void OnPageShow()
+	{
 	}
 
 	protected void Show()
 	{
 		View.Show();
+		OnPageShow();
+	}
+
+	protected void Clear()
+	{
+		View.Clear();
 	}
 }

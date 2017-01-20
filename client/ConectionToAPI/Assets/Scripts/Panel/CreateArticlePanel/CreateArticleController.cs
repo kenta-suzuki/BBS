@@ -10,24 +10,40 @@ public class CreateArticleController : ControllerBase<CreateArticleController, C
 	protected override void Initialize()
 	{
 		base.Initialize();
-		_createArticleModel = new CreateArticleModel();
-
 		View.CreateArticleButtonClicked += () => OnCreateArticleButtonClick();
-		View.AddFileButtonClicked += () => OnAddFileButtonClick();
+		View.AddFileButtonClicked += () => OnArticleImageChoiceButtonClick();
 
 		View.EmailInputFieldCompleted += (email) => OnEmailInput(email);
 		View.NameInputFieldCompleted += (name) => OnNameInput(name);
 		View.TextInputFieldCompleted += (text) => OnTextInput(text);
+		View.PasswordInputFieldCompleted += (pass) => OnPasswordInput(pass);
+	}
+
+	protected override void OnPageShow()
+	{
+		_createArticleModel = new CreateArticleModel();
+	}
+
+	protected override void OnPageHide()
+	{
+		Clear();
 	}
 
 	void OnCreateArticleButtonClick()
 	{
-		DataManager.Manager.Models.BBSModel.CreateArticle(_createArticleModel.GetJsonData());
+		DataManager.Manager.Models.BBSModel.CreateArticle(_createArticleModel, () => Clear());
 	}
 
-	void OnAddFileButtonClick()
+	void OnArticleImageChoiceButtonClick()
 	{
-		CreateArticleChoiceImageController.Open(PageManager.Instance.transform, () => Show(), "Prefabs/ChoiceFileDialog");
+		var choiceController = CreateArticleChoiceImageController.Open(PageManager.Instance.transform, () => Show(), "Prefabs/ChoiceFileDialog");
+		choiceController.SetModel(_createArticleModel);
+		choiceController.ImageChose += OnArticleImageChoose;
+	}
+
+	void OnArticleImageChoose(Texture2D texture)
+	{
+		View.SetArticleImage(texture);
 	}
 
 	void OnNameInput(string subject)
@@ -43,5 +59,10 @@ public class CreateArticleController : ControllerBase<CreateArticleController, C
 	void OnEmailInput(string email)
 	{
 		_createArticleModel.Email = email;
+	}
+
+	void OnPasswordInput(string pass)
+	{
+		_createArticleModel.Password = pass;
 	}
 }

@@ -20,7 +20,7 @@ public class TopPanelView : ViewBase
 
 	public override void Initialize()
 	{
-		ClearThreadDatas();
+		Clear();
 		ReloadButton.ButtonClicked += () => ReloadButtonClicked();
 		CreateArticleButton.ButtonClicked += () => CreateArticleButtonClicked();
 	}
@@ -38,7 +38,7 @@ public class TopPanelView : ViewBase
 		_contents.Add(content);
 	}
 
-	public void ClearThreadDatas()
+	public override void Clear()
 	{
 		_contents.ForEach((obj) => Destroy(obj.gameObject));
 		_contents.Clear();

@@ -44,4 +44,10 @@ public class CreateArticleChoiceImageView : ViewBase
 	{
 		return _contents.FirstOrDefault(content => content.IsSelected);
 	}
+
+	public override void Clear()
+	{
+		_contents.ForEach((obj) => Destroy(obj.gameObject));
+		_contents.Clear();
+	}
 }
