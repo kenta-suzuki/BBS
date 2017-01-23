@@ -6,7 +6,7 @@ using System;
 
 public class ResponsePlate : MonoBehaviour
 {
-	const string PrefabName = "";
+	const string PrefabName = "Prefabs/ResponsePlate";
 
 	[SerializeField]
 	Text Name;
@@ -34,11 +34,18 @@ public class ResponsePlate : MonoBehaviour
 		CreatedAt.text = bbs.CreatedAt;
 		ResponseText.text = bbs.Text;
 		Id = bbs.Id;
-		DeleteCheckButton.ButtonClicked += () => SetCheckMark(Id);
+		DeleteCheckButton.ButtonClicked += () => DeleteCheckButtonClicked(Id);
 	}
 
 	public void SetCheckMark(long id)
 	{
+		if (IsSelected && id != Id) return;
+		if (IsSelected && id == Id)
+		{
+			CheckMark.gameObject.SetActive(false);
+			return;
+		}
+
 		CheckMark.gameObject.SetActive(Id == id);
 	}
 }

@@ -18,8 +18,9 @@ public class ThreadContent : MonoBehaviour
 
 	public void Initialize(BBS data)
 	{
+		ArticleButton.ButtonClicked += () => ThreadButtonClicked();
 		ArticleSubject.text = data.Subject;
-		// 画像が添付できるようになったら処理をかく
+		ArticleImage.sprite = data.ConvertImageToSprite();
 	}
 
 	public static ThreadContent Create(Transform parent)

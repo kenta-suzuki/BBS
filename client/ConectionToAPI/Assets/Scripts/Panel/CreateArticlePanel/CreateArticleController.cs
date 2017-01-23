@@ -10,6 +10,7 @@ public class CreateArticleController : ControllerBase<CreateArticleController, C
 	protected override void Initialize()
 	{
 		base.Initialize();
+		View.IsResponse = false;
 		View.CreateArticleButtonClicked += () => OnCreateArticleButtonClick();
 		View.AddFileButtonClicked += () => OnArticleImageChoiceButtonClick();
 

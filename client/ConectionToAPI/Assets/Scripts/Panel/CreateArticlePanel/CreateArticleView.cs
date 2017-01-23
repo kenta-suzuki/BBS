@@ -20,6 +20,10 @@ public class CreateArticleView : ViewBase
 	CommonButton AddFileButton;
 	[SerializeField]
 	CommonButton CreateArticleButton;
+	[SerializeField]
+	CommonButton ResponseButton;
+
+	public bool IsResponse { get; set;}
 
 	public event Action AddFileButtonClicked;
 	public event Action CreateArticleButtonClicked;
@@ -34,6 +38,7 @@ public class CreateArticleView : ViewBase
 		base.Initialize();
 		AddFileButton.ButtonClicked += () => AddFileButtonClicked();
 		CreateArticleButton.ButtonClicked += () => CreateArticleButtonClicked();
+		ResponseButton.ButtonClicked += () => CreateArticleButtonClicked();
 
 		NameInputField.onValueChanged.AddListener((name) => NameInputFieldCompleted(name));
 		EmailInputField.onValueChanged.AddListener((email) => EmailInputFieldCompleted(email));
@@ -45,6 +50,16 @@ public class CreateArticleView : ViewBase
 	{
 		TextureScale.Bilinear(texture, 200, 200);
 		ArticleImage.sprite = Sprite.Create(texture, new Rect(0, 0, 200, 200), new Vector2(0.5f, 0.5f));
+	}
+
+	public void ShowResponseType()
+	{
+		CreateArticleButton.gameObject.SetActive(false);
+		ResponseButton.gameObject.SetActive(true);
+
+		NameInputField.gameObject.SetActive(false);
+		ArticleImage.gameObject.SetActive(false);
+		AddFileButton.gameObject.SetActive(false);
 	}
 
 	public override void Clear()

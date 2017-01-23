@@ -40,7 +40,6 @@ public class APIConnection : MonoBehaviour
 		if (callback == null) return;
 
 		var jsonObj = new JSONObject(response);
-		Debug.Log(jsonObj);
 		if (response[0] == '{')
 		{
 			var list = new List<JSONObject>() { jsonObj };

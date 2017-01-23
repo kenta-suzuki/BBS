@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class TopPanelController : ControllerBase<TopPanelController, TopPanelView>
 {
@@ -23,7 +24,14 @@ public class TopPanelController : ControllerBase<TopPanelController, TopPanelVie
 
 	void OnThreadButtonClick(long id)
 	{
-		// to thread page
+		var controller = ArticleController.Open(PageManager.Instance.transform, () =>
+		{
+			Show();
+			OnReloadButtonClick();
+		},
+		"Prefabs/Pages/ArticlePanel");
+		controller.SetBBSData(id);
+		Hide();
 	}
 
 	void OnCreateArticleButtonClick()
@@ -34,6 +42,7 @@ public class TopPanelController : ControllerBase<TopPanelController, TopPanelVie
 
 	void ReloadCallback(List<BBS> datas)
 	{
-		View.AddThread(datas);
+		var parents = datas.Where(data => data.Id == data.ParentBbsId).ToList();
+		View.AddThread(parents);
 	}
 }

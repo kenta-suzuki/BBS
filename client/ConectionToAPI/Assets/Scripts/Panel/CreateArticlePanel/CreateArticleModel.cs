@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,6 +28,7 @@ public class CreateArticleModel
 	public string Email { get; set; }
 	public string Password { get; set; }
 	public string FileName { get; set; }
+	public long? ParentId { get; set; }
 	public Texture2D ArticleImage { get; set; }
 
 	public event Action<List<Texture2D>> ImageLoaded = delegate {};
@@ -39,6 +41,10 @@ public class CreateArticleModel
 		json.AddField("email", Email);
 		json.AddField("password", Password);
 		json.AddField("file_name", FileName);
+		if (ParentId.HasValue)
+		{
+			json.AddField("parent_bbs_id", ParentId.Value);
+		}
 
 		Debug.Log(json.ToString());
 		return json;
@@ -47,7 +53,14 @@ public class CreateArticleModel
 	public void SetImage(Texture2D texture)
 	{
 		ArticleImage = texture;
-		FileName = texture.name;
+		FileName = CreateImageName(texture.name);
+	}
+
+	public string CreateImageName(string name)
+	{
+		var md5 = System.Security.Cryptography.MD5.Create();
+		var timeByte = BitConverter.GetBytes(Time.fixedTime);
+		return name + Time.fixedTime.ToString();
 	}
 
 	public void LoadImages()
@@ -79,7 +92,7 @@ public class CreateArticleModel
 
 	string GetImageFolderPath()
 	{
-		#if UNITY_EDITOR
+		#if UNITY_EDITOR || UNITY_STANDALONE
 		return GetPCFolderPath();
 		#elif UNITY_IPHONE
 		return GetIOSFolderPath();

@@ -23,7 +23,7 @@ public class ArticleParentPlate : MonoBehaviour
 
 	void Start()
 	{
-		DeleteCheckButton.ButtonClicked += () => SetCheckMark(Id);
+		DeleteCheckButton.ButtonClicked += () => DeleteCheckButtonClicked(Id);
 	}
 
 	public void Initialize(BBS bbs)
@@ -31,10 +31,18 @@ public class ArticleParentPlate : MonoBehaviour
 		Title.text = bbs.Subject;
 		Text.text = bbs.Text;
 		Id = bbs.Id;
+		ArticleImage.sprite = bbs.ConvertImageToSprite();
 	}
 
 	public void SetCheckMark(long id)
 	{
+		if (IsSelected && id != Id) return;
+		if (IsSelected && id == Id)
+		{
+			CheckMark.gameObject.SetActive(false);
+			return;
+		}
+
 		CheckMark.gameObject.SetActive(Id == id);
 	}
 

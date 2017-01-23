@@ -6,7 +6,6 @@ using System;
 public class CreateArticleChoiceImageController : ControllerBase<CreateArticleChoiceImageController, CreateArticleChoiceImageView>
 {
 	CreateArticleModel _model;
-	List<Texture2D> _textures = new List<Texture2D>();
 
 	public event Action<Texture2D> ImageChose = delegate {	};
 

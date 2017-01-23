@@ -6,7 +6,7 @@ using System;
 public abstract class ControllerBase<T,V> : MonoBehaviour where V :ViewBase, new() where T : ControllerBase<T,V>
 {
 	protected V View;
-	public virtual string PrefabName { get; }
+	public virtual string Identifier { get; }
 	public event Action BackButtonClicked = delegate {};
 
 	public static T Open(Transform parent, Action backbuttonClickCallback, string prefabName)
@@ -15,7 +15,7 @@ public abstract class ControllerBase<T,V> : MonoBehaviour where V :ViewBase, new
 		if (!PageManager.Instance.Pages.ContainsKey(prefabName))
 		{
 			var obj = (GameObject)Instantiate(Resources.Load(prefabName), parent);
-			controller = obj.GetComponent<T>();
+			controller = obj.AddComponent<T>();
 			controller.BackButtonClicked += () => backbuttonClickCallback();
 			controller.Initialize();
 			PageManager.Instance.Add(prefabName, obj);
