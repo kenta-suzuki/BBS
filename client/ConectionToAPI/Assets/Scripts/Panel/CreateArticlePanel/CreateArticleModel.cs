@@ -58,8 +58,6 @@ public class CreateArticleModel
 
 	public string CreateImageName(string name)
 	{
-		var md5 = System.Security.Cryptography.MD5.Create();
-		var timeByte = BitConverter.GetBytes(Time.fixedTime);
 		return name + Time.fixedTime.ToString();
 	}
 
