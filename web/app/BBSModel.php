@@ -33,28 +33,51 @@ class BBSModel extends Model
     	return $data;
     }
 
-    public function getLatestData()
-    {
-        $latestData = BBSModel::query()
-            ->orderBy('created_at','desc')
-            ->first();
-        return $latestData;
-    }
-
     public function createArticle($request)
     {
+        $body = $request->all();
+
+        if($request->hasFile('image'))
+        {
+            $image = $request->file('image');
+            $name = md5(sha1(uniqid(mt_rand(), true))).'.'.$image->getClientOriginalExtension();
+            $body['file_name'] = $name;
+            $this->uploadArticleImage($image, $name);
+        }
+
         $newArticle = BBSModel::create([
-                'subject' => $request['subject'],
-                'text' => $request['text'],
-                'email' => $request['email'],
-                'password' => $request['password'],
-                'file_name' => $request['file_name'],
+                'subject' => $body['subject'],
+                'text' => $body['text'],
+                'email' => $body['email'],
+                'password' => $body['password'],
+                'file_name' => $body['file_name'],
                 'parent_bbs_id' => 0,
                 'is_deleted' => false,
             ]);
-        $newArticle->parent_bbs_id = $newArticle->id;
+
+        if($request->has('parent_bbs_id'))
+        {
+            $newArticle->parent_bbs_id = $body['parent_bbs_id'];
+        }
+        else
+        {
+            $newArticle->parent_bbs_id = $newArticle->id;
+        }
+
         $newArticle->id = $newArticle->id;
         $newArticle->save();
+        return $newArticle;
+    }
+
+    private function uploadArticleImage($image, $name)
+    {
+        if($image->isValid())
+        {
+            $image->move(public_path('media'), $name);
+            return ;
+        }
+
+        abort(444, 'ファイルのアップロードに失敗しました');
     }
 
     public function getDownLoadArticleImage($name)
@@ -63,6 +86,7 @@ class BBSModel extends Model
         $handle = fopen($filename, "rb");
         $contents = fread($handle, filesize($filename));
         fclose($handle);
+
         return base64_encode($contents);
     }
 }
