@@ -7,6 +7,21 @@ using System.Linq;
 public class BBSModel :BaseModel
 {	
 	public List<BBS> BBSDatas { get; private set;}
+	public List<BBS> ArticleBBSDatas
+	{
+		get
+		{
+			return BBSDatas.Where(data => data.Id == data.ParentBbsId).ToList();
+		}
+	}
+
+	public List<BBS> ResponsBBSDatas 
+	{
+		get
+		{
+			return BBSDatas.Where(data => data.Id != data.ParentBbsId).ToList();
+		}
+	}
 
 	public override void Initialize()
 	{
@@ -37,5 +52,11 @@ public class BBSModel :BaseModel
 			BBSDatas.Add(BBS.CreateData(objects.First()));
 			callback();
 		});
+	}
+
+	public void DeleteArticles(List<JSONObject> datas, Action callback)
+	{
+		var request = new Request("articles/delete", HTTPMethod.Delete, datas.ToString());
+		APIConnection.Conncetion.Request(request, (obj) => callback());
 	}
 }
